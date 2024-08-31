@@ -17,12 +17,15 @@ const App = () => {
 
   const newAnecdoteMutation = useMutation({ 
     mutationFn: createAnecdote,
-    onSuccess: () => queryClient.invalidateQueries({queryKey: ['anecdotes']})
+    onSuccess: () => queryClient.invalidateQueries({queryKey: ['anecdotes']}),
+    onError: () =>  notificationDispatch({payload: 'too short anecdote, must have length 5 or more'})
   }
 )
   const addAnecdote = (content) => {
     newAnecdoteMutation.mutate({content, votes: 0})
-    notificationDispatch({payload: `add anecdote '${content}'`})
+    if(content.length > 4){
+      notificationDispatch({payload: `add anecdote '${content}'`})
+    }
     setTimeout(() => notificationDispatch({payload: null}), 5000)
   }
 
